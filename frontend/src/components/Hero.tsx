@@ -1,7 +1,9 @@
-
 import Spline from '@splinetool/react-spline';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="container" style={{ 
       minHeight: '100vh', 
@@ -18,7 +20,7 @@ const Hero = () => {
           We give doctors their time back. Cipher handles the documentation so you can focus on what matters most: your patients.
         </p>
         <div className="fade-in delay-3" style={{ display: 'flex', gap: '1rem' }}>
-          <button className="btn-primary">Get Started</button>
+          <button className="btn-primary" onClick={() => navigate('/dashboard')}>Get Started</button>
           <button className="btn-secondary">Documentation</button>
         </div>
       </div>

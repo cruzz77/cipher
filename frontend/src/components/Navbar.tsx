@@ -1,5 +1,8 @@
+import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
   return (
     <nav className="glass" style={{
       position: 'fixed',
@@ -14,7 +17,7 @@ const Navbar = () => {
       justifyContent: 'space-between',
       padding: '0.75rem 2rem',
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
         <div style={{ 
           width: '32px', 
           height: '32px', 
@@ -23,23 +26,30 @@ const Navbar = () => {
           display: 'grid',
           placeItems: 'center',
           fontWeight: 'bold',
-          fontSize: '1.2rem'
+          fontSize: '1.2rem',
+          color: 'var(--bg-primary)'
         }}>
           C
         </div>
-        <span style={{ fontWeight: 600, fontSize: '1.1rem', letterSpacing: '-0.01em' }}>Cipher</span>
-      </div>
+        <span style={{ fontWeight: 600, fontSize: '1.1rem', letterSpacing: '-0.01em', color: 'var(--text-primary)' }}>Cipher</span>
+      </Link>
       
       <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
-        <a href="#features" className="nav-link">Features</a>
-        <a href="#solutions" className="nav-link">Solutions</a>
-        <a href="#docs" className="nav-link">Docs</a>
-        <a href="#pricing" className="nav-link">Pricing</a>
+        <Link to="/features" className="nav-link">Features</Link>
+        <Link to="/solutions" className="nav-link">Solutions</Link>
+        <Link to="/docs" className="nav-link">Docs</Link>
+        <Link to="/pricing" className="nav-link">Pricing</Link>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <button style={{ background: 'transparent', color: 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: 500 }}>Sign in</button>
-        <button className="btn-primary" style={{ padding: '0.5rem 1.25rem' }}>Get Started</button>
+        <button 
+          className="btn-primary" 
+          style={{ padding: '0.5rem 1.25rem' }}
+          onClick={() => navigate('/dashboard')}
+        >
+          Get Started
+        </button>
       </div>
     </nav>
   );
