@@ -14,7 +14,7 @@ const Hero = () => {
     }}>
       <div style={{ flex: 1, zIndex: 1, position: 'relative' }}>
         <h1 className="hero-title fade-in delay-1">
-          Cipher: The Doctor Savier.
+          Cipher: The Doctor Savior.
         </h1>
         <p className="hero-subtitle fade-in delay-2">
           We give doctors their time back. Cipher handles the documentation so you can focus on what matters most: your patients.

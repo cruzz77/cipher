@@ -5,7 +5,7 @@ import analyzeRoutes from "./routes/analyze.js";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 1213;
+const PORT = process.env.PORT || 4979;
 
 app.use(cors());
 app.use(express.json());

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const TEST_URL = 'http://localhost:1213/api/analyze';
+const TEST_URL = 'http://localhost:/api/analyze';
 const SAMPLE_DATA = {
     text: "Patient has fever for 2 days and mild cough. Doctor prescribed paracetamol 500mg three times a day."
 };

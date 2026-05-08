@@ -42,7 +42,7 @@ const Navbar = () => {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        <button style={{ background: 'transparent', color: 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: 500 }}>Sign in</button>
+
         <button 
           className="btn-primary" 
           style={{ padding: '0.5rem 1.25rem' }}

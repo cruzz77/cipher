@@ -27,6 +27,7 @@ const Dashboard = () => {
   });
   const [selectedId, setSelectedId] = useState<number | undefined>();
   const [isSaving, setIsSaving] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
 
   // Load records from localStorage
   useEffect(() => {
@@ -50,7 +51,7 @@ const Dashboard = () => {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:1312/api/analyze', {
+      const response = await fetch('http://localhost:4979/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: inputText })
@@ -150,6 +151,7 @@ const Dashboard = () => {
               <VoiceInput 
                 onTextGenerated={(text) => setInputText(text)} 
                 isProcessing={isAnalyzing} 
+                onListeningChange={setIsRecording}
               />
             </div>
 
@@ -183,7 +185,7 @@ const Dashboard = () => {
                 <button
                   className="btn-primary"
                   onClick={handleAnalyze}
-                  disabled={isAnalyzing || !inputText.trim()}
+                  disabled={isAnalyzing || isRecording || !inputText.trim()}
                   style={{
                     padding: '12px 32px',
                     fontSize: '1rem',

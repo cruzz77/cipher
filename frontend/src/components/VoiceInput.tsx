@@ -5,48 +5,66 @@ import { Mic, Square, Loader2, AlertCircle } from 'lucide-react';
 interface VoiceInputProps {
   onTextGenerated: (text: string) => void;
   isProcessing?: boolean;
+  onListeningChange?: (isListening: boolean) => void;
 }
 
-const VoiceInput: React.FC<VoiceInputProps> = ({ onTextGenerated, isProcessing }) => {
+const VoiceInput: React.FC<VoiceInputProps> = ({ onTextGenerated, isProcessing, onListeningChange }) => {
   const [isListening, setIsListening] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Refs for persistence (STRICT REQUIREMENT)
   const recognitionRef = useRef<any>(null);
   const isRecordingRef = useRef(false);
-  const finalTranscriptRef = useRef(""); // Buffer for finalized speech
+  const finalTranscriptRef = useRef(""); 
+  const onTextGeneratedRef = useRef(onTextGenerated);
 
+  // Sync isListening state with parent
+  useEffect(() => {
+    onListeningChange?.(isListening);
+  }, [isListening, onListeningChange]);
+
+  // Keep the callback ref up-to-date without re-running the recognition effect
+  useEffect(() => {
+    onTextGeneratedRef.current = onTextGenerated;
+  }, [onTextGenerated]);
+
+  // Initialize ONLY ONCE (IMPORTANT)
   useEffect(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
     if (!SpeechRecognition) {
-      setError("Web Speech API is not supported in this browser.");
+      setError("Speech recognition not supported in this browser.");
       return;
     }
 
     const recognition = new SpeechRecognition();
+
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.lang = 'en-US';
+    recognition.lang = "en-US";
 
     recognition.onresult = (event: any) => {
-      let interimTranscript = '';
-      
-      // event.resultIndex gives us the start of the new results
+      let interimTranscript = "";
+
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript;
+
         if (event.results[i].isFinal) {
-          finalTranscriptRef.current += transcript + ' ';
+          finalTranscriptRef.current += transcript + " ";
         } else {
           interimTranscript += transcript;
         }
       }
 
-      // Combine finalized and current interim results for real-time preview
-      onTextGenerated(finalTranscriptRef.current + interimTranscript);
+      // Update the input text with accumulated + current interim transcript
+      onTextGeneratedRef.current(finalTranscriptRef.current + interimTranscript);
     };
 
     recognition.onerror = (event: any) => {
       if (event.error === 'no-speech') return; 
-      console.error("Speech Recognition Error:", event.error);
+      console.error("Speech recognition error", event.error);
       setError(`Error: ${event.error}`);
+      
       if (event.error === 'not-allowed') {
         setIsListening(false);
         isRecordingRef.current = false;
@@ -61,35 +79,35 @@ const VoiceInput: React.FC<VoiceInputProps> = ({ onTextGenerated, isProcessing }
         } catch (err) {
           console.error("Failed to restart recognition:", err);
         }
-      } else {
-        setIsListening(false);
       }
     };
 
     recognitionRef.current = recognition;
 
     return () => {
-      isRecordingRef.current = false;
       recognition.stop();
     };
-  }, [onTextGenerated]);
+  }, []);
 
   const toggleListening = () => {
-    if (isListening) {
+    if (!recognitionRef.current) return;
+
+    if (isRecordingRef.current) {
+      recognitionRef.current.stop();
       isRecordingRef.current = false;
-      recognitionRef.current?.stop();
       setIsListening(false);
     } else {
       setError(null);
-      isRecordingRef.current = true;
-      finalTranscriptRef.current = ""; // Reset accumulation for new session
+      finalTranscriptRef.current = ""; // reset only on new session
       try {
-        recognitionRef.current?.start();
+        recognitionRef.current.start();
+        isRecordingRef.current = true;
         setIsListening(true);
       } catch (err) {
         console.error("Failed to start speech recognition:", err);
         setError("Failed to start recognition. Please check permissions.");
         isRecordingRef.current = false;
+        setIsListening(false);
       }
     }
   };
