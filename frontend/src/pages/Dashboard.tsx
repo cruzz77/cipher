@@ -51,7 +51,8 @@ const Dashboard = () => {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:4979/api/analyze', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:4979';
+      const response = await fetch(`${apiUrl}/api/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: inputText })
